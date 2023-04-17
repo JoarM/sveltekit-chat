@@ -10,8 +10,10 @@
 <main class="container mx-auto p-8">
     <div class="max-w-3xl mx-auto">
         <IfUser>
-            <p class="text-xl my-5">User id:<span class="text-white font-bold"><UserData field="uid"></UserData></span></p>
-            <p class="text-xl my-5">Status: <span class="text-white font-bold"><UserData field="status"></UserData></span></p>
+            <p>User id:<span><UserData field="uid"></UserData></span></p>
+            <p>Display name: <span><UserData field="displayName"></UserData></span></p>
+            <p>Email: <span><UserData field="email"></UserData></span></p>
+            <p>Status: <span><UserData field="status"></UserData></span></p>
             <Signout>
                 <button class="btn">SIGN OUT</button>
             </Signout>
@@ -33,5 +35,13 @@
 
     .blue-btn {
         @apply bg-blue-500 text-white;
+    }
+
+    p {
+        @apply text-xl my-5;
+    }
+
+    span {
+        @apply text-white font-bold;
     }
 </style>

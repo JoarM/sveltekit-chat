@@ -1,6 +1,6 @@
 import { config } from "../environments/environment";
 import { initializeApp } from "firebase/app";
-import { GoogleAuthProvider, getAuth, signInWithPopup, signOut } from "firebase/auth";
+import { GoogleAuthProvider, getAuth, signInWithPopup, signOut, reauthenticateWithPopup, deleteUser } from "firebase/auth";
 import type { UserCredential } from "firebase/auth";
 import { toast } from "../stores/toast";
 import { modal } from "../stores/modal";
