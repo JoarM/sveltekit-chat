@@ -2,7 +2,7 @@
     import IfUser from "../Users/if-user.svelte";
     import Messages from "../messages/messages.svelte";
     import ModalAction from "./modal-action.svelte";
-    import { collection, getFirestore, limit, orderBy, query, } from 'firebase/firestore';
+    import { collection, getFirestore, limitToLast, orderBy, query, } from 'firebase/firestore';
     import { user } from "../../stores/user";
     import Input from "../messages/input.svelte";
     import CanMessage from "../Users/can-message.svelte";
@@ -17,7 +17,7 @@
     }
 
     $: makeQuery = () => {
-        const q = query(collection(firestore, "messages"), orderBy("createdAt"), limit(10));
+        const q = query(collection(firestore, "messages"), orderBy("createdAt"), limitToLast(10));
         return q;
     }
 </script>
