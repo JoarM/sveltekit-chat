@@ -22,7 +22,7 @@
     }
 </script>
 
-<div class="flex gap-3 items-center justify-between group/message hover:bg-slate-800 duration-200 px-6 py-3 overflow-hidden">
+<div class="flex gap-3 items-center justify-between group/message hover:bg-slate-800 duration-200 px-6 py-3">
     <div class="flex gap-3">
         <img src="{message.photoUrl}" alt="Profile pic" class="h-12 rounded-full">
         <span class="flex flex-col justify-center">

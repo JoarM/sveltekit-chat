@@ -16,9 +16,7 @@
                     <UserAvatar></UserAvatar>
                 </a>
                 <ModalAction slot="signed-out" name="signin" type="open">
-                    <button>
-                        login
-                    </button>
+                    <button>login</button>
                 </ModalAction>
             </IfUser>
         </li>
