@@ -43,5 +43,6 @@
 
     span {
         @apply text-white font-bold;
+        word-break: break-all;
     }
 </style>
