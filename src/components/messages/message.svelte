@@ -11,9 +11,11 @@
     export let message: Message;
     export let perms: UserPermisions;
     export let firestore: Firestore;
+    export let scroll: Function;
 
     function deleteMessage(id: any) : any {
         deleteDoc(doc(firestore, "messages", id));
+        scroll();
     }
 
     function convertDate(date: Timestamp) : string {
@@ -26,9 +28,8 @@
     <div class="flex gap-3">
         <img src="{message.photoUrl}" alt="Profile pic" class="h-12 rounded-full">
         <span class="flex flex-col justify-center">
-            <span class="flex items-end flex-wrap">
+            <span class="flex items-end flex-wrap gap-2">
                 <h3 class="font-bold- whitespace-nowrap">{message.displayName}</h3>
-                <StatusIcon perms={perms}></StatusIcon>
                 <p class="timestamp">{convertDate(message.createdAt)}</p>
             </span>
             <p class="texts">{message.message}</p>

@@ -16,7 +16,9 @@
                     <UserAvatar></UserAvatar>
                 </a>
                 <ModalAction slot="signed-out" name="signin" type="open">
-                    <button>login</button>
+                    <button class="bg-slate-200 text-slate-800 px-5 py-1 rounded-md 
+                    hover:bg-blue-500 hover:text-white duration-200 font-bold hover:shadow-slate-200 hover:shadow hover:scale-105"
+                    >Sign in</button>
                 </ModalAction>
             </IfUser>
         </li>

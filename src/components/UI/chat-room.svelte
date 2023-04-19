@@ -9,6 +9,8 @@
     import UserStatus from "../Users/user-status.svelte";
     import Message from "../messages/message.svelte";
     import type { UserPermisions } from "../../stores/user";
+    import { onMount } from "svelte";
+    let container: HTMLDivElement;
     
     const firestore = getFirestore();
     const defaultPerms: UserPermisions = {
@@ -20,18 +22,22 @@
         const q = query(collection(firestore, "messages"), orderBy("createdAt"), limitToLast(10));
         return q;
     }
+
+    function scrollToBottom() {
+        container.scrollTop = container.scrollHeight;
+    }
 </script>
 
 
 <div class="container mx-auto">
     <div class="max-w-3xl mx-auto flex flex-col gap-4 fill relative">
         <IfUser>
-            <div class="flex-grow overflow-y-auto">
+            <div class="flex-grow overflow-y-auto scroller" bind:this={container}>
                 <Messages ref={makeQuery()} startWith={[]} firestore={firestore} let:data={messages}>
                     {#each messages as message}
                         <UserStatus uid={message.uid} db={firestore} let:data={perms}>
-                            <Message firestore={firestore} message={message} perms={perms}></Message>
-                            <Message firestore={firestore} message={message} perms={defaultPerms} slot="member"></Message>
+                            <Message firestore={firestore} message={message} perms={perms} scroll={scrollToBottom}></Message>
+                            <Message firestore={firestore} message={message} perms={defaultPerms} scroll={scrollToBottom} slot="member"></Message>
                         </UserStatus>
                     {/each}
                     <div slot="loading">
@@ -42,7 +48,7 @@
             
             <CanMessage>
                 <div class="w-full my-4">
-                    <Input user={$user}></Input>
+                    <Input user={$user} scroll={scrollToBottom}></Input>
                 </div>
                 <p slot="banned" class="m-4 text-2xl font-bold opacity-75">You are banned, conntact admin to get unbanned.</p>
             </CanMessage>
