@@ -77,5 +77,6 @@
 
     .fill {
         height: calc(100vh - 120px);
+        height: calc(100svh - 120px);
     }
 </style>

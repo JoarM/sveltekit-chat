@@ -2,21 +2,23 @@
     import type { User } from "firebase/auth";
     import type { Message } from "../../stores/collections";
     import { toast } from "../../stores/toast";
+    import { emojis } from "../../stores/emojis";
     let message: HTMLSpanElement;
     const mobile = isMobile();
-    let empty = true;
-
+    let emojiButton: HTMLButtonElement;
+    
     export let user: User | null;
     export let scroll: Function;
 
     async function sendMessage() {
+        const maxLength = 500;
         if (!user) return;
         if (!user.displayName) return;
         if (!user.photoURL) return;
         if (message.innerText.trim() === "") return;
-        if (message.innerText.length > 500) {
+        if (message.innerText.length > maxLength) {
             toast.set({
-                message: "Message cant be longer then 200 characters!",
+                message: "Message cant be longer then " + maxLength + " characters!",
                 type: "error",
             });
             return;
@@ -53,15 +55,39 @@
         } 
         return false;
     }
+
+    function randInt(max: number) : number {
+        return Math.floor(Math.random() * max);
+    }
+
+    function changeEmoji() {
+        const picker = $emojis.find((element) => element.name === "smileys-emotion");
+        if (!picker?.emojis) return;
+        emojiButton.innerText = picker.emojis[randInt(picker.emojis.length)].character;
+        console.log(emojis);
+    }
 </script>
 
-<form class="flex items-center gap-1 mx-3"  on:submit={sendMessage}>
+<form class="flex items-center gap-1 mx-3 relative"  on:submit={sendMessage}>
     <!-- svelte-ignore a11y-interactive-supports-focus -->
-    <span bind:this={message} contenteditable="true" role="textbox" spellcheck="true" on:keypress={keyboardTyping}>
-        
-    </span>
-    <p class="label" class:seetrough={!empty}>Message @chatroom</p>
-    <button>
+    <span bind:this={message} contenteditable="true" role="textbox" spellcheck="true" on:keypress={keyboardTyping}></span>
+    <p class="label">Message @chatroom</p>
+    <div class="emojiContainer">
+        {#each $emojis as category}
+        <div>
+            <p class="capitalize">{category.name}</p>
+            <div class="inner-emojis">
+                {#each category.emojis as emoji}
+                    <button class="rounded text-2xl text-center hover:bg-slate-500">
+                        {emoji.character}
+                    </button>
+                {/each}
+            </div>
+        </div>
+        {/each}
+    </div>
+    <button class="emojis" on:mouseenter={changeEmoji} bind:this={emojiButton}>😀</button>
+    <button class="send">
         <svg viewBox="0 0 512 512"><path d="M498.1 5.6c10.1 7 15.4 19.1 13.5 31.2l-64 416c-1.5 9.7-7.4 18.2-16 23s-18.9 5.4-28 1.6L284 427.7l-68.5 74.1c-8.9 9.7-22.9 12.9-35.2 8.1S160 493.2 160 480V396.4c0-4 1.5-7.8 4.2-10.7L331.8 202.8c5.8-6.3 5.6-16-.4-22s-15.7-6.4-22-.7L106 360.8 17.7 316.6C7.1 311.3 .3 300.7 0 288.9s5.9-22.8 16.1-28.7l448-256c10.7-6.1 23.9-5.5 34 1.4z"/></svg>
     </button>
 </form>
@@ -83,20 +109,39 @@
         overflow-wrap: break-word;
     }
 
-    button {
+    .send {
         @apply bg-sky-500 md:hidden md:rounded-md rounded-3xl p-3;
     }
 
     .label {
-        @apply absolute left-5 select-none pointer-events-none opacity-50 duration-100;
+        @apply absolute left-2 select-none pointer-events-none opacity-50 duration-100;
     }
 
-    form:focus-within .label,
     span:not(:empty) + .label {
         @apply opacity-0;
     }
 
-    span:empty ~ button {
+    span:empty ~ .send {
         @apply hidden;
+    }
+
+    .emojis {
+        @apply absolute right-3 bottom-3 grayscale w-6 h-6 text-xl transition-transform duration-100;
+        transform-origin: center;
+
+        &:hover {
+            @apply grayscale-0 scale-110;
+        }
+    }
+
+    .emojiContainer {
+        @apply absolute right-0 bottom-12 flex flex-col gap-2 p-3 bg-slate-700 rounded;
+        width: min(20rem, 70vw);
+        height: min(20rem, 70vh);
+        overflow-y: scroll;
+    }
+
+    .inner-emojis {
+        @apply flex flex-wrap;
     }
 </style>
