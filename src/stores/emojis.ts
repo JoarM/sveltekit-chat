@@ -7,7 +7,7 @@ interface catergory {
 }
 
 export const emojis = writable<any[]>([]);
-export const skinColor = writable<"" | "light" | "medium-light" | "medium" | "medium-dark" | "dark">("");
+export const skinColor = writable<number>(0);
 
 let i = 0;
 let tmp: catergory[] = [];
@@ -23,13 +23,16 @@ categories.forEach((category) => {
     fetch("https://emoji-api.com/categories/" + category + "?access_key=" + emojiKey)
     .then((res) => res.json())
     .then((data) => {
+        let emojiData = data;
+        if (category === "people-body") {
+            emojiData = data.filter((elemet: any) => elemet.variants != undefined);
+        }
         const insertData: catergory = {
             name: category,
-            emojis: data,
+            emojis: emojiData,
         } 
         tmp.push(insertData);
-        i++;
-        if (i < categories.length) sort();
+        emojis.set(tmp);
     });
 });
 

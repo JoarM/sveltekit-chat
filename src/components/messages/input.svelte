@@ -3,6 +3,7 @@
     import type { Message } from "../../stores/collections";
     import { toast } from "../../stores/toast";
     import { emojis } from "../../stores/emojis";
+    import EmojiKeyboard from "../UI/emoji-keyboard.svelte";
     let message: HTMLSpanElement;
     const mobile = isMobile();
     let emojiButton: HTMLButtonElement;
@@ -73,18 +74,7 @@
     <span bind:this={message} contenteditable="true" role="textbox" spellcheck="true" on:keypress={keyboardTyping}></span>
     <p class="label">Message @chatroom</p>
     <div class="emojiContainer">
-        {#each $emojis as category}
-        <div>
-            <p class="capitalize">{category.name}</p>
-            <div class="inner-emojis">
-                {#each category.emojis as emoji}
-                    <button class="rounded text-2xl text-center hover:bg-slate-500">
-                        {emoji.character}
-                    </button>
-                {/each}
-            </div>
-        </div>
-        {/each}
+        <EmojiKeyboard></EmojiKeyboard>
     </div>
     <button class="emojis" on:mouseenter={changeEmoji} bind:this={emojiButton}>😀</button>
     <button class="send">
@@ -135,13 +125,8 @@
     }
 
     .emojiContainer {
-        @apply absolute right-0 bottom-12 flex flex-col gap-2 p-3 bg-slate-700 rounded;
-        width: min(20rem, 70vw);
-        height: min(20rem, 70vh);
-        overflow-y: scroll;
-    }
-
-    .inner-emojis {
-        @apply flex flex-wrap;
+        @apply absolute right-0 bottom-12 flex gap-2 bg-slate-700 rounded overflow-y-hidden;
+        width: min(22rem, 70vw);
+        height: min(22rem, 70vh);
     }
 </style>
