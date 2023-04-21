@@ -2,6 +2,7 @@ import { emojiKey } from "../environments/environment";
 import { writable } from "svelte/store";
 
 interface catergory {
+    id: number,
     name: string,
     emojis: any,
 }
@@ -19,7 +20,7 @@ const categories: string[] = [
     "food-drink",
 ]
 
-categories.forEach((category) => {
+categories.forEach((category, index) => {
     fetch("https://emoji-api.com/categories/" + category + "?access_key=" + emojiKey)
     .then((res) => res.json())
     .then((data) => {
@@ -28,6 +29,7 @@ categories.forEach((category) => {
             emojiData = data.filter((elemet: any) => elemet.variants != undefined);
         }
         const insertData: catergory = {
+            id: index,
             name: category,
             emojis: emojiData,
         } 
@@ -35,18 +37,6 @@ categories.forEach((category) => {
         emojis.set(tmp);
     });
 });
-
-function sort() {
-    sorted.push(tmp.filter((e) => e.name === "smileys-emotion")[0]);
-    const peopleTmp = tmp.filter((e) => e.name === "people-body")[0];
-    const people = peopleTmp;
-    sorted.push(people);
-    console.log(people);
-    sorted.push(tmp.filter((e) => e.name === "animals-nature")[0]);
-    sorted.push(tmp.filter((e) => e.name === "food-drink")[0]);
-
-    emojis.set(sorted);
-}
 
 
 

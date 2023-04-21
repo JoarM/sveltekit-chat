@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import { doc, collection, onSnapshot, Timestamp } from 'firebase/firestore';
+import { collection, onSnapshot, Timestamp } from 'firebase/firestore';
 import type {
   Firestore,
   Query,
