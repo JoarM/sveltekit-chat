@@ -7,6 +7,7 @@
     let message: HTMLSpanElement;
     const mobile = isMobile();
     let emojiButton: HTMLButtonElement;
+    let emojiOpen = false;
     
     export let user: User | null;
     export let scroll: Function;
@@ -65,22 +66,28 @@
         const picker = $emojis.find((element) => element.name === "smileys-emotion");
         if (!picker?.emojis) return;
         emojiButton.innerText = picker.emojis[randInt(picker.emojis.length)].character;
-        console.log(emojis);
+    }
+
+    function insertChar(value: string, index: number = message.innerText.length) {
+        message.innerText = message.innerText.substring(0, index) + value + message.innerText.substring(index);
+        message.focus();
     }
 </script>
 
-<form class="flex items-center gap-1 mx-3 relative"  on:submit={sendMessage}>
+<form class="flex items-center gap-1 mx-3 relative">
     <!-- svelte-ignore a11y-interactive-supports-focus -->
-    <span bind:this={message} contenteditable="true" role="textbox" spellcheck="true" on:keypress={keyboardTyping}></span>
+    <span bind:this={message} contenteditable="true" role="textbox" spellcheck="true" on:keypress={keyboardTyping} tabindex="0"></span>                     
     <p class="label">Message @chatroom</p>
-    <div class="emojiContainer">
-        <EmojiKeyboard></EmojiKeyboard>
+    <div class="emojiContainer" class:closed={!emojiOpen}>
+        <EmojiKeyboard insertChar={insertChar}></EmojiKeyboard>
     </div>
-    <button class="emojis" on:mouseenter={changeEmoji} bind:this={emojiButton}>😀</button>
-    <button class="send">
+    <button class="emojis" on:mouseenter={changeEmoji} bind:this={emojiButton} on:click={() => emojiOpen = !emojiOpen}>😀</button>
+    
+    <button class="send" on:click={sendMessage}>
         <svg viewBox="0 0 512 512"><path d="M498.1 5.6c10.1 7 15.4 19.1 13.5 31.2l-64 416c-1.5 9.7-7.4 18.2-16 23s-18.9 5.4-28 1.6L284 427.7l-68.5 74.1c-8.9 9.7-22.9 12.9-35.2 8.1S160 493.2 160 480V396.4c0-4 1.5-7.8 4.2-10.7L331.8 202.8c5.8-6.3 5.6-16-.4-22s-15.7-6.4-22-.7L106 360.8 17.7 316.6C7.1 311.3 .3 300.7 0 288.9s5.9-22.8 16.1-28.7l448-256c10.7-6.1 23.9-5.5 34 1.4z"/></svg>
     </button>
 </form>
+
 
 <style lang="scss">
     svg {
@@ -125,8 +132,12 @@
     }
 
     .emojiContainer {
-        @apply absolute right-0 bottom-12 flex gap-2 bg-slate-700 rounded overflow-y-hidden;
-        width: min(22rem, 70vw);
+        @apply absolute right-0 bottom-12 flex flex-col bg-slate-700 rounded overflow-y-hidden shadow;
+        width: clamp(18rem, 60vw, 24rem);
         height: min(22rem, 70vh);
+    }
+
+    .closed {
+        @apply invisible;
     }
 </style>
