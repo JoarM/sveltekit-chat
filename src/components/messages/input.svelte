@@ -8,6 +8,7 @@
     const mobile = isMobile();
     let emojiButton: HTMLButtonElement;
     let emojiOpen = false;
+    let caretPos = 0;
     
     export let user: User | null;
     export let scroll: Function;
@@ -42,7 +43,10 @@
     }
 
     function keyboardTyping(e: KeyboardEvent) {
-        if (e.key === "Enter" && !e.shiftKey && !mobile) sendMessage();
+        if (e.key === "Enter" && !e.shiftKey && !mobile) {
+            sendMessage();
+            caretPos = 0;
+        }
     }
 
     function isMobile() {
@@ -70,21 +74,34 @@
 
     function insertChar(value: string, index: number = message.innerText.length) {
         message.innerText = message.innerText.substring(0, index) + value + message.innerText.substring(index);
+        caretPos = caretPos + value.length;
         message.focus();
     }
+
+    function updateCaret() {
+        const pos = window.getSelection()?.anchorOffset;
+        if (pos === undefined) return;
+        caretPos = pos;
+        console.log(caretPos);
+    }
+
 </script>
 
 <form class="flex items-center gap-1 mx-3 relative">
     <!-- svelte-ignore a11y-interactive-supports-focus -->
     <div class="flex items-center gap-1 relative flex-grow bg-slate-800 md:rounded-md rounded-3xl p-2">
-        <span bind:this={message} contenteditable="true" role="textbox" spellcheck="true" on:keypress={keyboardTyping} tabindex="0"></span>                     
+        <span bind:this={message} contenteditable="true" role="textbox" spellcheck="true" tabindex="0" 
+        on:keypress={keyboardTyping}
+        on:click={updateCaret}
+        on:keyup={updateCaret}
+        on:touchend={updateCaret}
+        on:paste={updateCaret}
+        on:cut={updateCaret}
+        ></span>                     
         <p class="label">Message @chatroom</p>
         <button class="emojis" on:mouseenter={changeEmoji} bind:this={emojiButton} on:click={ () => emojiOpen = !emojiOpen }>😀</button>
-    </div>
-    
-
-    <div class="emojiContainer" class:closed={!emojiOpen}>
-        <EmojiKeyboard insertChar={insertChar}></EmojiKeyboard>
+        
+        <EmojiKeyboard insertChar={insertChar} emojiOpen={emojiOpen} caretPos={caretPos}></EmojiKeyboard>
     </div>
     
     <button class="send" on:click={sendMessage}>
@@ -129,15 +146,4 @@
         @apply absolute right-3 bottom-3 grayscale w-6 h-6 text-xl transition-transform duration-100 md:hover:grayscale-0 md:hover:scale-110;
         transform-origin: center;
     }
-
-    .emojiContainer {
-        @apply absolute right-0 bottom-12 flex flex-col bg-slate-700 rounded overflow-y-hidden shadow;
-        width: clamp(18rem, 60vw, 24rem);
-        height: min(22rem, 70vh);
-    }
-
-    .closed {
-        @apply invisible;
-    }
-
 </style>
