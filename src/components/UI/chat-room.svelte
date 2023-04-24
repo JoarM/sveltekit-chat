@@ -9,7 +9,6 @@
     import UserStatus from "../Users/user-status.svelte";
     import Message from "../messages/message.svelte";
     import type { UserPermisions } from "../../stores/user";
-    import { onMount } from "svelte";
     let container: HTMLDivElement;
     
     const firestore = getFirestore();
