@@ -76,12 +76,16 @@
 
 <form class="flex items-center gap-1 mx-3 relative">
     <!-- svelte-ignore a11y-interactive-supports-focus -->
-    <span bind:this={message} contenteditable="true" role="textbox" spellcheck="true" on:keypress={keyboardTyping} tabindex="0"></span>                     
-    <p class="label">Message @chatroom</p>
+    <div class="flex items-center gap-1 relative flex-grow bg-slate-800 md:rounded-md rounded-3xl p-2">
+        <span bind:this={message} contenteditable="true" role="textbox" spellcheck="true" on:keypress={keyboardTyping} tabindex="0"></span>                     
+        <p class="label">Message @chatroom</p>
+        <button class="emojis" on:mouseenter={changeEmoji} bind:this={emojiButton} on:click={ () => emojiOpen = !emojiOpen }>😀</button>
+    </div>
+    
+
     <div class="emojiContainer" class:closed={!emojiOpen}>
         <EmojiKeyboard insertChar={insertChar}></EmojiKeyboard>
     </div>
-    <button class="emojis" on:mouseenter={changeEmoji} bind:this={emojiButton} on:click={() => emojiOpen = !emojiOpen}>😀</button>
     
     <button class="send" on:click={sendMessage}>
         <svg viewBox="0 0 512 512"><path d="M498.1 5.6c10.1 7 15.4 19.1 13.5 31.2l-64 416c-1.5 9.7-7.4 18.2-16 23s-18.9 5.4-28 1.6L284 427.7l-68.5 74.1c-8.9 9.7-22.9 12.9-35.2 8.1S160 493.2 160 480V396.4c0-4 1.5-7.8 4.2-10.7L331.8 202.8c5.8-6.3 5.6-16-.4-22s-15.7-6.4-22-.7L106 360.8 17.7 316.6C7.1 311.3 .3 300.7 0 288.9s5.9-22.8 16.1-28.7l448-256c10.7-6.1 23.9-5.5 34 1.4z"/></svg>
@@ -97,8 +101,7 @@
     }
 
     span {
-        @apply p-2 flex-grow outline-none border-none text-slate-200 bg-slate-800 md:rounded-md rounded-3xl relative;
-        width: 100%;
+        @apply flex-grow outline-none border-none text-slate-200 relative w-full;
         overflow-wrap: break-word;
         position: relative; 
         outline: none;
@@ -118,17 +121,13 @@
         @apply opacity-0;
     }
 
-    span:empty ~ .send {
+    div:has(span:empty) ~ .send {
         @apply hidden;
     }
 
     .emojis {
-        @apply absolute right-3 bottom-3 grayscale w-6 h-6 text-xl transition-transform duration-100;
+        @apply absolute right-3 bottom-3 grayscale w-6 h-6 text-xl transition-transform duration-100 md:hover:grayscale-0 md:hover:scale-110;
         transform-origin: center;
-
-        &:hover {
-            @apply grayscale-0 scale-110;
-        }
     }
 
     .emojiContainer {
@@ -140,4 +139,5 @@
     .closed {
         @apply invisible;
     }
+
 </style>
